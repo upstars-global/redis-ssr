@@ -34,7 +34,7 @@ spec:
           requests:
             cpu: {{ .Values.cache.requests.cpu }}
             memory: {{ .Values.cache.requests.memory }}
-        {{- if not (eq $values.dynamic.isDynamic "true") }}
+        {{- if not (eq $values.cache.usePVC "true") }}
         volumeMounts:
           - name: {{ include "redis_name" . }}
             mountPath: /data
