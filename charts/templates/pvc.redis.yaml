@@ -1,7 +1,7 @@
 {{- $values := .Values -}}
 {{- $release := .Release -}}
 
-{{- if not (eq $values.cache.usePVC "true") }}
+{{- if (eq $values.cache.usePVC "true") }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
