@@ -50,7 +50,7 @@ spec:
             cpu: 100m
             memory: 100Mi
       restartPolicy: Always
-      {{- if not (eq $values.dynamic.isDynamic "true") }}
+      {{- if not (eq $values.cache.usePVC "true") }}
       volumes:
         - name: {{ include "redis_name" . }}
           persistentVolumeClaim:
