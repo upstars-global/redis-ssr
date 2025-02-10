@@ -1,0 +1,59 @@
+{{- $values := .Values -}}
+{{- $release := .Release -}}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9121"
+  labels: {{ include "redis_labels" . | nindent 4 }}
+  name: {{ include "redis_name" . }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels: {{ include "selector_redis_labels" . | nindent 6 }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels: {{ include "redis_labels" . | nindent 8 }}
+        app.kubernetes.io/version: {{ $values.cache.version }}
+    spec:
+      containers:
+      - name: {{ .Values.cache.name }}
+        image: {{ printf "%s:%s-%s" .Values.cache.name .Values.cache.version .Values.cache.alpine }}
+        args:
+          {{ toYaml .Values.cache.args | nindent 10 }}
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: {{ .Values.cache.port }}
+          name: {{ .Values.cache.name }}
+        resources:
+          requests:
+            cpu: {{ .Values.cache.requests.cpu }}
+            memory: {{ .Values.cache.requests.memory }}
+        {{- if not (eq $values.dynamic.isDynamic "true") }}
+        volumeMounts:
+          - name: {{ include "redis_name" . }}
+            mountPath: /data
+        {{- end }}
+      - name: exporter
+        image: oliver006/redis_exporter
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: {{ .Values.cache.metricsPort }}
+          name: metrics
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+      restartPolicy: Always
+      {{- if not (eq $values.dynamic.isDynamic "true") }}
+      volumes:
+        - name: {{ include "redis_name" . }}
+          persistentVolumeClaim:
+            claimName: {{ include "redis_pvc_name" . }}
+      {{- end }}
+      serviceAccountName: {{ $values.serviceAccount.name }}

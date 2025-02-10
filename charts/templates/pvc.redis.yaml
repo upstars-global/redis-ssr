@@ -1,0 +1,21 @@
+{{- $values := .Values -}}
+{{- $release := .Release -}}
+
+{{- if not (eq $values.dynamic.isDynamic "true") }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    {{ include "redis_labels" . | nindent 4 }}
+    app.kubernetes.io/application: {{ $values.serviceAccount.name }}
+    app.kubernetes.io/instance: {{ $release.Name }}
+  name: {{ include "redis_pvc_name" . }}
+spec:
+  storageClassName: gp3
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage:  {{ $values.cache.volume.size }}
+---
+{{- end }}

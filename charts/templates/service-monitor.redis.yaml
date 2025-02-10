@@ -1,0 +1,22 @@
+{{- $values := .Values -}}
+{{- $release := .Release -}}
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "redis_name" . }}
+  labels:
+    release: prometheus
+
+spec:
+  endpoints:
+    - interval: 30s
+      path: /metrics
+      port: metrics
+      scheme: http
+      scrapeTimeout: 30s
+  namespaceSelector:
+    matchNames:
+      - {{ $values.serviceAccount.name }}
+  selector:
+    matchLabels: {{ include "redis_labels" . | nindent 6 }}

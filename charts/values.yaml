@@ -1,0 +1,28 @@
+desc:
+  env: development
+  brand: ''
+  partOf: ''
+  project: ''
+
+serviceAccount:
+  name: ''
+
+cache:
+  name: redis
+  version: 7.4.1
+  alpine: "alpine3.20"
+  usePVC: "false"
+  args:
+    - "--save"
+    - "3600 1 300 15 60 1000"
+    - "--maxmemory"
+    - "2GB"
+    - "--maxmemory-policy"
+    - "volatile-ttl"
+  port: 6379
+  metricsPort: 9121
+  requests:
+    cpu: 10m
+    memory: 100Mi
+  volume:
+    size: 3Gi

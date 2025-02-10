@@ -1,0 +1,20 @@
+{{- $values := .Values -}}
+{{- $release := .Release -}}
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels: {{ include "redis_labels" . | nindent 4 }}
+  name: {{ include "redis_name" . }}
+spec:
+  ports:
+  - name: redis
+    port: {{ $values.cache.port }}
+    protocol: TCP
+    targetPort: {{ $values.cache.port }}
+  - name: metrics
+    port: {{ $values.cache.metricsPort }}
+    protocol: TCP
+    targetPort: {{ $values.cache.metricsPort }}
+  selector: {{ include "selector_redis_labels" . | nindent 4 }}
+  type: ClusterIP
