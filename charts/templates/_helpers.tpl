@@ -6,26 +6,16 @@
 {{- printf "%s-%s" .Release.Name .Values.cache.name | quote -}}
 {{- end }}
 
-{{- define "selector_labels" -}}
+{{- define "selector_redis_labels" -}}
 app.kubernetes.io/brand: {{ .Values.desc.brand }}
 app.kubernetes.io/part-of: {{ .Values.desc.partOf }}
 app.kubernetes.io/env: {{ .Values.desc.env }}
 app.kubernetes.io/release: {{ .Release.Name }}
-{{- end -}}
-
-{{- define "selector_redis_labels" -}}
-{{ include "selector_labels" . }}
 app.kubernetes.io/component: cache
-app.kubernetes.io/name: {{ printf "frontera-%s" .Values.cache.name }}
-{{- end -}}
-
-{{- define "common_labels" -}}
-{{ include "selector_labels" . }}
-app.kubernetes.io/project: {{ .Values.desc.project }}
+app.kubernetes.io/name: {{ printf "%s-%s" .Values.desc.partOf .Values.cache.name }}
 {{- end -}}
 
 {{- define "redis_labels" -}}
-{{ include "common_labels" . }}
-app.kubernetes.io/component: cache
-app.kubernetes.io/name: {{ printf "%s-%s" .Values.desc.partOf .Values.cache.name }}
+{{ include "selector_redis_labels" . }}
+app.kubernetes.io/project: {{ .Values.desc.project }}
 {{- end -}}
