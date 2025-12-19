@@ -16,13 +16,24 @@ cache:
     - "--save"
     - "3600 1 300 15 60 1000"
     - "--maxmemory"
-    - "2GB"
+    - "1900mb"
     - "--maxmemory-policy"
     - "volatile-ttl"
   port: 6379
   metricsPort: 9121
   requests:
-    cpu: 10m
-    memory: 100Mi
+    cpu: 200m
+    memory: 2Gi
+  limits:
+    cpu: 200m
+    memory: 2Gi
   volume:
     size: 3Gi
+
+exporter:
+  requests:
+    cpu: 100m
+    memory: 100Mi
+  limits:
+    cpu: 100m
+    memory: 100Mi

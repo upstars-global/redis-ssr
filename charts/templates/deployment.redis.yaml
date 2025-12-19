@@ -34,6 +34,9 @@ spec:
           requests:
             cpu: {{ .Values.cache.requests.cpu }}
             memory: {{ .Values.cache.requests.memory }}
+          limits:
+            cpu: {{ .Values.cache.limits.cpu }}
+            memory: {{ .Values.cache.limits.memory }}
         {{- if (eq $values.cache.usePVC "true") }}
         volumeMounts:
           - name: {{ include "redis_name" . }}
@@ -47,8 +50,11 @@ spec:
           name: metrics
         resources:
           requests:
-            cpu: 100m
-            memory: 100Mi
+            cpu: {{ .Values.exporter.requests.cpu }}
+            memory: {{ .Values.exporter.requests.memory }}
+          limits:
+            cpu: {{ .Values.exporter.limits.cpu }}
+            memory: {{ .Values.exporter.limits.memory }}
       restartPolicy: Always
       {{- if (eq $values.cache.usePVC "true") }}
       volumes:
