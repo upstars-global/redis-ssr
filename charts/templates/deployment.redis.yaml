@@ -7,7 +7,9 @@ metadata:
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9121"
-  labels: {{ include "redis_labels" . | nindent 4 }}
+  labels:
+    {{ include "required_labels" . | nindent 4 }}
+    {{ include "redis_labels" . | nindent 4 }}
   name: {{ include "redis_name" . }}
 spec:
   replicas: 1
@@ -18,7 +20,9 @@ spec:
     type: Recreate
   template:
     metadata:
-      labels: {{ include "redis_labels" . | nindent 8 }}
+      labels:
+        {{ include "required_labels" . | nindent 8 }}
+        {{ include "redis_labels" . | nindent 8 }}
         app.kubernetes.io/version: {{ $values.cache.version }}
     spec:
       containers:
