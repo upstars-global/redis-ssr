@@ -2,6 +2,11 @@
 {{- printf "%s-%s-pvc" .Release.Name .Values.cache.name | quote -}}
 {{- end }}
 
+{{- define "required_labels" }}
+app: {{ .Release.Name }}
+team: {{ .Values.desc.team }}
+{{- end }}
+
 {{- define "redis_name" }}
 {{- printf "%s-%s" .Release.Name .Values.cache.name | quote -}}
 {{- end }}
